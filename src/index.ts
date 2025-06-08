@@ -434,7 +434,12 @@ function applyScriptTransforms ({
     return node
 }
 
-function applyStyleTransforms ({ node, styleTransforms, tagName, context = '' }) {
+function applyStyleTransforms ({
+    node,
+    styleTransforms,
+    tagName,
+    context = ''
+}) {
     const attrs = node?.attrs || []
     if (node.childNodes.length) {
         const raw = node.childNodes[0].value
