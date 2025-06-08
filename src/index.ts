@@ -416,18 +416,24 @@ function applyScriptTransforms ({
     tagName
 }:{
     node:DefaultTreeAdapterMap['element'];
-    scriptTransforms;
+    scriptTransforms:(({ attrs, raw, tagName })=>string)[];
     tagName;
 }) {
     const attrs = node?.attrs || []
     if (node.childNodes.length) {
-        const raw = node.childNodes[0].value
+        const firstChild = node.childNodes[0]
+        // const textNode = firstChild
+        // Only access 'value' if it's a text node
+        const raw = ('value' in firstChild) ?
+            firstChild.value :
+            ''
         let out = raw
         scriptTransforms.forEach(transform => {
             out = transform({ attrs, raw: out, tagName })
         })
         if (out.length) {
-            node.childNodes[0].value = out
+            (node.childNodes[0] as
+                DefaultTreeAdapterMap['textNode']).value = out
         }
     }
 
