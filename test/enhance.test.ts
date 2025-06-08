@@ -1,4 +1,4 @@
-import test from 'tape'
+import { test } from '@substrate-system/tapzero'
 import enhance from '../index.mjs'
 import MyButton from './fixtures/templates/my-button.mjs'
 import MyContent from './fixtures/templates/my-content.mjs'
@@ -30,8 +30,8 @@ import MyCustomHeadingWithNamedSlot from './fixtures/templates/my-custom-heading
 import MultipleSlots from './fixtures/templates/multiple-slots.mjs'
 import MyEmptyStyle from './fixtures/templates/my-empty-style.mjs'
 
-function Head() {
-  return `
+function Head () {
+    return `
 <!DOCTYPE html>
 <head></head>
   `
@@ -40,154 +40,146 @@ function Head() {
 const strip = str => str.replace(/\r?\n|\r|\s\s+/g, '')
 
 test('Enhance should', t => {
-  t.ok(true, 'it really should')
-  t.end()
+    t.ok(true, 'it really should')
 })
 
 test('exist', t => {
-  t.ok(enhance, 'it lives')
-  t.end()
+    t.ok(enhance, 'it lives')
 })
 
 test('return an html function', t => {
-  const html = enhance()
-  t.ok(html, 'ah yes, this might come in handy')
-  t.end()
+    const html = enhance()
+    t.ok(html, 'ah yes, this might come in handy')
 })
 
 test('default content in unnamed slot', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-button': MyButton,
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-button': MyButton,
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-button></my-button>
   `
-  const expected = `
+    const expected = `
 <my-button>
   <button>Submit</button>
 </my-button>
 `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Will you look at that! Default content in unnamed slot works.'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Will you look at that! Default content in unnamed slot works.'
+    )
 })
 
 test('default content in unnamed slot with white space', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-button': MyButton,
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-button': MyButton,
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-button> </my-button>
   `
-  const expected = `
+    const expected = `
 <my-button>
   <button></button>
 </my-button>
 `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Whitespace is treated as content for an unnamed slot so no default content is shown. This is how the browser works ¯\_(ツ)_/¯'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Whitespace is treated as content for an unnamed slot so no default content is shown. This is how the browser works ¯\_(ツ)_/¯'
+    )
 })
 
 test('should replace default content in unnamed slot', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-button': MyButton,
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-button': MyButton,
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-button>Let's Go!</my-button>
   `
-  const expected = `
+    const expected = `
 <my-button>
   <button>Let's Go!</button>
 </my-button>
 `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Yes we DO replace default content, thank you very much.'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Yes we DO replace default content, thank you very much.'
+    )
 })
 
 test('expand template', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-paragraph': MyParagraph,
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-paragraph': MyParagraph,
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-paragraph></my-paragraph>
   `
-  const expected = `
+    const expected = `
 <my-paragraph>
   <p><span slot="my-text">My default text</span></p>
 </my-paragraph>
 `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'by gum, i do believe that it does expand that template with slotted default content'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'by gum, i do believe that it does expand that template with slotted default content'
+    )
 })
 
 test('add enhanced attribute', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-paragraph': MyParagraph,
-    }
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-paragraph': MyParagraph,
+        }
+    })
+    const actual = html`
   <my-paragraph></my-paragraph>
   `
-  const expected = `
+    const expected = `
 <my-paragraph enhanced="✨">
   <p><span slot="my-text">My default text</span></p>
 </my-paragraph>
 `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'by gum, i do believe that it does expand that template with slotted default content'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'by gum, i do believe that it does expand that template with slotted default content'
+    )
 })
 
 test('Passing state through multiple levels', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-pre-page': MyPrePage,
-      'my-pre': MyPre
-    },
-    enhancedAttr: false
-  })
-  const items = ['test']
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-pre-page': MyPrePage,
+            'my-pre': MyPre
+        },
+        enhancedAttr: false
+    })
+    const items = ['test']
+    const actual = html`
   <my-pre-page items="${items}"></my-pre-page>
   `
-  const expected = `
+    const expected = `
   <my-pre-page items="">
     <my-pre items="">
       <pre>test</pre>
@@ -195,26 +187,25 @@ test('Passing state through multiple levels', t => {
   </my-pre-page>
 `
 
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'state makes it to the inner component render'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'state makes it to the inner component render'
+    )
 })
 
 test('should render as div tag with slot name', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-multiples': MyMultiples
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-multiples': MyMultiples
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-multiples></my-multiples>
   `
-  const expected = `
+    const expected = `
 <my-multiples>
   <div slot="my-content">
     My default text
@@ -231,109 +222,105 @@ test('should render as div tag with slot name', t => {
 </my-multiples>
 `
 
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Whew it renders slot as div tag with the slot name added'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Whew it renders slot as div tag with the slot name added'
+    )
 })
 
 test('should not duplicate slotted elements', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-outline': MyOutline
-    },
-    enhancedAttr: false
-  })
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-outline': MyOutline
+        },
+        enhancedAttr: false
+    })
 
-  const actual = html`
+    const actual = html`
 <my-outline>
   <div slot="toc" class="toc">things</div>
 </my-outline>`
 
-  const expected = `
+    const expected = `
   <my-outline>
     <div slot="toc" class="toc">things</div>
   </my-outline>
     `
 
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'It better not be duplicating slotted elements'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'It better not be duplicating slotted elements'
+    )
 })
 
 test('fill named slot', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-paragraph': MyParagraph
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-paragraph': MyParagraph
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
 <my-paragraph id="0">
   <span slot="my-text">Slotted</span>
 </my-paragraph>
   `
-  const expected = `
+    const expected = `
 <my-paragraph id="0">
   <p><span slot="my-text">Slotted</span></p>
 </my-paragraph>
 `
 
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'fills that named slot alright'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'fills that named slot alright'
+    )
 })
 
 test('add authored children to unnamed slot', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-content': MyContent
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-content': MyContent
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-content id="0">
     <h4 slot=title>Custom title</h4>
   </my-content>`
 
-  const expected = `
+    const expected = `
 <my-content id="0">
   <h2>My Content</h2>
   <h4 slot="title">Custom title</h4>
 </my-content>
 
 `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'adds unslotted children to the unnamed slot'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'adds unslotted children to the unnamed slot'
+    )
 })
 
 test('pass attributes as state', t => {
-  const html = enhance({
-    elements: {
-      'my-link': MyLink
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        elements: {
+            'my-link': MyLink
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
 ${Head()}
 <my-link href='/yolo' text='sketchy'></my-link>
 `
-  const expected = `
+    const expected = `
 <!DOCTYPE html>
 <html>
 <head></head>
@@ -355,27 +342,26 @@ ${Head()}
 </html>
 `
 
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'passes attributes as a state object when executing template functions'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'passes attributes as a state object when executing template functions'
+    )
 })
 
 test('pass attribute array values correctly', t => {
-  const html = enhance({
-    elements: {
-      'my-list': MyList
-    },
-    enhancedAttr: false
-  })
-  const things = [{ title: 'one' }, { title: 'two' }, { title: 'three' }]
-  const actual = html`
+    const html = enhance({
+        elements: {
+            'my-list': MyList
+        },
+        enhancedAttr: false
+    })
+    const things = [{ title: 'one' }, { title: 'two' }, { title: 'three' }]
+    const actual = html`
   ${Head()}
 <my-list items="${things}"></my-list>
 `
-  const expected = `
+    const expected = `
 <!DOCTYPE html>
 <html>
 <head></head>
@@ -402,24 +388,22 @@ test('pass attribute array values correctly', t => {
 </html>
   `
 
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'this means that encoding and decoding arrays and objects works, exciting'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'this means that encoding and decoding arrays and objects works, exciting'
+    )
 })
 
-
 test('should update deeply nested slots', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-content': MyContent
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-content': MyContent
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-content>
     <my-content id="0">
       <h3 slot="title">Second</h3>
@@ -429,7 +413,7 @@ test('should update deeply nested slots', t => {
     </my-content>
   </my-content>`
 
-  const expected = `
+    const expected = `
   <my-content>
     <h2>My Content</h2>
     <h3 slot="title">
@@ -446,30 +430,29 @@ test('should update deeply nested slots', t => {
   </my-content>
 `
 
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'updates deeply nested slots SLOTS ON SLOTS ON SLOTS'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'updates deeply nested slots SLOTS ON SLOTS ON SLOTS'
+    )
 })
 
 test('fill nested rendered slots', t => {
-  const html = enhance({
-    elements: {
-      'my-list-container': MyListContainer,
-      'my-list': MyList
-    },
-    enhancedAttr: false
-  })
-  const items = [{ title: 'one' }, { title: 'two' }, { title: 'three' }]
-  const actual = html`
+    const html = enhance({
+        elements: {
+            'my-list-container': MyListContainer,
+            'my-list': MyList
+        },
+        enhancedAttr: false
+    })
+    const items = [{ title: 'one' }, { title: 'two' }, { title: 'three' }]
+    const actual = html`
   ${Head()}
 <my-list-container items="${items}">
   <span slot=title>YOLO</span>
 </my-list-container>
   `
-  const expected = `
+    const expected = `
 <!DOCTYPE html>
 <html>
 <head></head>
@@ -513,22 +496,21 @@ test('fill nested rendered slots', t => {
 </body>
 </html>
 `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Wow it renders nested custom elements by passing that handy render function when executing template functions'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Wow it renders nested custom elements by passing that handy render function when executing template functions'
+    )
 })
 
 test('should allow supplying custom head tag', t => {
-  const html = enhance({
-    elements: {
-      'my-counter': MyCounter
-    },
-    enhancedAttr: false
-  })
-  const myHead = `
+    const html = enhance({
+        elements: {
+            'my-counter': MyCounter
+        },
+        enhancedAttr: false
+    })
+    const myHead = `
     <!DOCTYPE html>
     <head>
       <meta charset="utf-8">
@@ -536,11 +518,11 @@ test('should allow supplying custom head tag', t => {
       <link rel="stylesheet" href="/style.css">
     </head>
     `
-  const actual = html`
+    const actual = html`
     ${myHead}
     <my-counter count="3"></my-counter>
     `
-  const expected = `
+    const expected = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -554,49 +536,48 @@ test('should allow supplying custom head tag', t => {
 </html>
   `
 
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Can supply custom head tag'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Can supply custom head tag'
+    )
 })
 
 test('should pass store to template', t => {
-  const initialState = {
-    apps: [
-      {
-        id: 1,
-        name: 'one',
-        users: [
-          {
-            id: 1,
-            name: 'jim'
-          },
-          {
-            id: 2,
-            name: 'kim'
-          },
-          {
-            id: 3,
-            name: 'phillip'
-          }
+    const initialState = {
+        apps: [
+            {
+                id: 1,
+                name: 'one',
+                users: [
+                    {
+                        id: 1,
+                        name: 'jim'
+                    },
+                    {
+                        id: 2,
+                        name: 'kim'
+                    },
+                    {
+                        id: 3,
+                        name: 'phillip'
+                    }
+                ]
+            }
         ]
-      }
-    ]
-  }
-  const html = enhance({
-    elements: {
-      'my-store-data': MyStoreData
-    },
-    initialState,
-    enhancedAttr: false
-  })
-  const actual = html`
+    }
+    const html = enhance({
+        elements: {
+            'my-store-data': MyStoreData
+        },
+        initialState,
+        enhancedAttr: false
+    })
+    const actual = html`
   ${Head()}
   <my-store-data app-index="0" user-index="1"></my-store-data>
   `
-  const expected = `
+    const expected = `
 <!DOCTYPE html>
 <html>
 <head></head>
@@ -611,28 +592,27 @@ test('should pass store to template', t => {
 </html>
   `
 
-  t.equal(strip(actual), strip(expected), 'Should render store data')
-  t.end()
+    t.equal(strip(actual), strip(expected), 'Should render store data')
 })
 
 test('should run script transforms and add only one script per custom element', t => {
-  const html = enhance({
-    elements: {
-      'my-transform-script': MyTransformScript
-    },
-    scriptTransforms: [
-      function({ attrs, raw, tagName }) {
-        return `${raw}\n${tagName}`
-      }
-    ],
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        elements: {
+            'my-transform-script': MyTransformScript
+        },
+        scriptTransforms: [
+            function ({ attrs, raw, tagName }) {
+                return `${raw}\n${tagName}`
+            }
+        ],
+        enhancedAttr: false
+    })
+    const actual = html`
   ${Head()}
   <my-transform-script></my-transform-script>
   <my-transform-script></my-transform-script>
   `
-  const expected = `
+    const expected = `
 <!DOCTYPE html>
 <html>
 <head></head>
@@ -656,35 +636,33 @@ test('should run script transforms and add only one script per custom element', 
 </html>
   `
 
-  t.equal(strip(actual), strip(expected), 'ran script transforms')
-  t.end()
+    t.equal(strip(actual), strip(expected), 'ran script transforms')
 })
 
 test('should run style transforms', t => {
-  const html = enhance({
-    elements: {
-      'my-transform-style': MyTransformStyle
-    },
-    styleTransforms: [
-      function({ attrs, raw, tagName, context }) {
-        if (attrs.find(i => i.name === "scope")?.value === "global" && context === "template") return ''
-        return `
+    const html = enhance({
+        elements: {
+            'my-transform-style': MyTransformStyle
+        },
+        styleTransforms: [
+            function ({ attrs, raw, tagName, context }) {
+                if (attrs.find(i => i.name === 'scope')?.value === 'global' && context === 'template') return ''
+                return `
         ${raw}
         /*
         ${tagName} styles
         context: ${context}
         */
         `
-
-      }
-    ],
-    enhancedAttr: false
-  })
-  const actual = html`
+            }
+        ],
+        enhancedAttr: false
+    })
+    const actual = html`
   ${Head()}
   <my-transform-style></my-transform-style>
   `
-  const expected = `
+    const expected = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -724,38 +702,36 @@ test('should run style transforms', t => {
 </html>
   `
 
-  t.equal(strip(actual), strip(expected), 'ran style transform style')
-  t.end()
+    t.equal(strip(actual), strip(expected), 'ran style transform style')
 })
 
 test('should not add duplicated style tags to head', t => {
-  const html = enhance({
-    elements: {
-      'my-transform-style': MyTransformStyle,
-    },
-    styleTransforms: [
-      function({ attrs, raw, tagName, context }) {
-        // if tagged as global only add to the head
-        if (attrs.find(i => i.name === "scope")?.value === "global" && context === "template") return ''
+    const html = enhance({
+        elements: {
+            'my-transform-style': MyTransformStyle,
+        },
+        styleTransforms: [
+            function ({ attrs, raw, tagName, context }) {
+                // if tagged as global only add to the head
+                if (attrs.find(i => i.name === 'scope')?.value === 'global' && context === 'template') return ''
 
-        return `
+                return `
         ${raw}
         /*
         ${tagName} styles
         context: ${context}
         */
         `
-
-      }
-    ],
-    enhancedAttr: false
-  })
-  const actual = html`
+            }
+        ],
+        enhancedAttr: false
+    })
+    const actual = html`
   ${Head()}
   <my-transform-style></my-transform-style>
   <my-transform-style></my-transform-style>
   `
-  const expected = `
+    const expected = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -796,50 +772,48 @@ test('should not add duplicated style tags to head', t => {
 </html>
   `
 
-  t.equal(strip(actual), strip(expected), 'removed duplicate style sheet')
-  t.end()
+    t.equal(strip(actual), strip(expected), 'removed duplicate style sheet')
 })
 
 test('should respect as attribute', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-slot-as': MySlotAs
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-slot-as': MySlotAs
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-slot-as></my-slot-as>
   `
-  const expected = `
+    const expected = `
   <my-slot-as>
     <div slot="stuff">
       stuff
     </div>
   </my-slot-as>
   `
-  t.equal(strip(actual), strip(expected), 'respects as attribute')
-  t.end()
+    t.equal(strip(actual), strip(expected), 'respects as attribute')
 })
 
 test('should add multiple external scripts', t => {
-  const html = enhance({
-    elements: {
-      'my-external-script': MyExternalScript
-    },
-    scriptTransforms: [
-      function({ attrs, raw, tagName }) {
-        return `${raw}\n${tagName}`
-      }
-    ],
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        elements: {
+            'my-external-script': MyExternalScript
+        },
+        scriptTransforms: [
+            function ({ attrs, raw, tagName }) {
+                return `${raw}\n${tagName}`
+            }
+        ],
+        enhancedAttr: false
+    })
+    const actual = html`
   ${Head()}
   <my-external-script></my-external-script>
   <my-external-script></my-external-script>
   `
-  const expected = `
+    const expected = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -856,20 +830,19 @@ test('should add multiple external scripts', t => {
 </body>
 </html>
   `
-  t.equal(strip(actual), strip(expected), 'Adds multiple external scripts')
-  t.end()
+    t.equal(strip(actual), strip(expected), 'Adds multiple external scripts')
 })
 
 test('should support nested custom elements with nested slots', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-heading': MyHeading,
-      'my-super-heading': MySuperHeading
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-heading': MyHeading,
+            'my-super-heading': MySuperHeading
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-super-heading>
     <span slot="emoji">
       ✨
@@ -877,7 +850,7 @@ test('should support nested custom elements with nested slots', t => {
     My Heading
   </my-super-heading>
   `
-  const expected = `
+    const expected = `
   <my-super-heading>
     <span slot="emoji">
       ✨
@@ -890,56 +863,53 @@ test('should support nested custom elements with nested slots', t => {
   </my-super-heading>
 `
 
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Renders nested slots in nested custom elements'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Renders nested slots in nested custom elements'
+    )
 })
 
 test('should not fail when passed a custom element without a template function', t => {
-  const html = enhance()
-  const out = html`<noop-noop></noop-noop>`
-  t.ok(out, 'Does not fail when passed a custom element that has no template function')
-  t.end()
+    const html = enhance()
+    const out = html`<noop-noop></noop-noop>`
+    t.ok(out, 'Does not fail when passed a custom element that has no template function')
 })
 
 test('should supply instance ID', t => {
-  const html = enhance({
-    bodyContent: true,
-    uuidFunction: function() { return 'abcd1234' },
-    elements: {
-      'my-instance-id': MyInstanceID
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        uuidFunction: function () { return 'abcd1234' },
+        elements: {
+            'my-instance-id': MyInstanceID
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-instance-id></my-instance-id>
   `
-  const expected = `
+    const expected = `
 <my-instance-id>
   <p>abcd1234</p>
 </my-instance-id>
   `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Has access to instance ID'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Has access to instance ID'
+    )
 })
 
 test('should supply context', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-context-parent': MyContextParent,
-      'my-context-child': MyContextChild
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-context-parent': MyContextParent,
+            'my-context-child': MyContextChild
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   <my-context-parent message="hmmm">
     <div>
       <span>
@@ -951,7 +921,7 @@ test('should supply context', t => {
     </my-context-parent>
   </my-context-parent>
   `
-  const expected = `
+    const expected = `
   <my-context-parent message="hmmm">
     <div>
       <span>
@@ -967,30 +937,28 @@ test('should supply context', t => {
     </my-context-parent>
   </my-context-parent>
   `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Passes context data to child elements'
-  )
-  t.end()
-
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Passes context data to child elements'
+    )
 })
 
 test('move link elements to head', t => {
-  const html = enhance({
-    elements: {
-      'my-link-node-first': MyLinkNodeFirst,
-      'my-link-node-second': MyLinkNodeSecond
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        elements: {
+            'my-link-node-first': MyLinkNodeFirst,
+            'my-link-node-second': MyLinkNodeSecond
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
 ${Head()}
 <my-link-node-first>first</my-link-node-first>
 <my-link-node-second>second</my-link-node-second>
 <my-link-node-first>first again</my-link-node-first>
   `
-  const expected = `
+    const expected = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -1004,29 +972,28 @@ ${Head()}
 </body>
 </html>
 `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'moves deduplicated link elements to the head'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'moves deduplicated link elements to the head'
+    )
 })
 
 test('should hoist css imports', t => {
-  const html = enhance({
-    elements: {
-      'my-style-import-first': MyStyleImportFirst,
-      'my-style-import-second': MyStyleImportSecond
-    },
-    enhancedAttr: false
-  })
-  const actual = html`
+    const html = enhance({
+        elements: {
+            'my-style-import-first': MyStyleImportFirst,
+            'my-style-import-second': MyStyleImportSecond
+        },
+        enhancedAttr: false
+    })
+    const actual = html`
   ${Head()}
   <my-style-import-first></my-style-import-first>
   <my-style-import-second></my-style-import-second>
   `
 
-  const expected = `
+    const expected = `
   <!DOCTYPE html>
   <html>
   <head>
@@ -1043,27 +1010,25 @@ test('should hoist css imports', t => {
   </body>
   </html>
   `
-  t.equal(strip(actual), strip(expected), 'Properly hoists CSS imports')
-  t.end()
+    t.equal(strip(actual), strip(expected), 'Properly hoists CSS imports')
 })
 
 test('Should render nested named slot inside unnamed slot', t => {
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'my-custom-heading': MyCustomHeading,
+            'my-custom-heading-with-named-slot': MyCustomHeadingWithNamedSlot
+        },
+        enhancedAttr: false
+    })
 
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'my-custom-heading': MyCustomHeading,
-      'my-custom-heading-with-named-slot': MyCustomHeadingWithNamedSlot
-    },
-    enhancedAttr: false
-  })
-
-  const actual = html`
+    const actual = html`
     <my-custom-heading-with-named-slot>
       <span slot="heading-text">Here's my text</span>
     </my-custom-heading-with-named-slot>
   `
-  const expected = `
+    const expected = `
     <my-custom-heading-with-named-slot>
       <my-custom-heading>
         <h1>
@@ -1073,54 +1038,51 @@ test('Should render nested named slot inside unnamed slot', t => {
     </my-custom-heading-with-named-slot>
   `
 
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Renders nested named slot inside unnamed slot'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Renders nested named slot inside unnamed slot'
+    )
 })
 
 test('multiple slots with unnamed slot first', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'multiple-slots': MultipleSlots,
-    }
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'multiple-slots': MultipleSlots,
+        }
+    })
+    const actual = html`
   <multiple-slots>unnamed slot<div slot="slot1">slot One</div></multiple-slots>
   `
-  const expected = `
+    const expected = `
 <multiple-slots enhanced="✨">
   unnamed slot<div slot="slot1">slot One</div>
 </multiple-slots>
 `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Unnamed and named slots work together'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Unnamed and named slots work together'
+    )
 })
 
 test('should render empty style tag', t => {
-  const html = enhance({
-    bodyContent: true,
-    elements: {
-      'empty-style': MyEmptyStyle,
-    }
-  })
-  const actual = html`
+    const html = enhance({
+        bodyContent: true,
+        elements: {
+            'empty-style': MyEmptyStyle,
+        }
+    })
+    const actual = html`
     <empty-style></empty-style>
   `
-  const expected = `
+    const expected = `
     <empty-style enhanced="✨"></empty-style>
   `
-  t.equal(
-    strip(actual),
-    strip(expected),
-    'Does not throw an error when an empty style tag is rendered'
-  )
-  t.end()
+    t.equal(
+        strip(actual),
+        strip(expected),
+        'Does not throw an error when an empty style tag is rendered'
+    )
 })
