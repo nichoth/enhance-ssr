@@ -36,6 +36,7 @@
   "author": "kj <kj@begin.com>",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@enhance/enhance-style-transform": "^0.1.2",
     "@substrate-system/tapzero": "^0.10.15",
     "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.0.0",
