@@ -1,4 +1,5 @@
 import { parse, parseFragment, serialize, serializeOuter } from 'parse5'
+import type { DefaultTreeAdapterMap } from 'parse5'
 import isCustomElement from './is-custom-element.js'
 import { encode, decode } from './transcode.js'
 import walk from './walk.mjs'
@@ -31,9 +32,9 @@ export default function Enhancer (options:Partial<{
         collectedScripts,
         collectedLinks
     } {
-        const collectedStyles = []
-        const collectedScripts = []
-        const collectedLinks = []
+        const collectedStyles:DefaultTreeAdapterMap['documentFragment'][] = []
+        const collectedScripts:DefaultTreeAdapterMap['documentFragment'][] = []
+        const collectedLinks:DefaultTreeAdapterMap['documentFragment'][] = []
         const context = {}
 
         walk(node, child => {
@@ -76,11 +77,21 @@ export default function Enhancer (options:Partial<{
 
     return function html (strings, ...values) {
         const doc = parse(render(strings, ...values))
-        const html = doc.childNodes.find(node => {
+        const html = doc.childNodes.find(_node => {
+            const node = _node as DefaultTreeAdapterMap['element']
             return (node.tagName && node.tagName === 'html')
         })
-        const body = html.childNodes.find(node => node.tagName === 'body')
-        const head = html.childNodes.find(node => node.tagName === 'head')
+        if (!html) return
+        const body = (html as DefaultTreeAdapterMap['documentFragment'])
+            .childNodes
+            .find(node => (
+                (node as DefaultTreeAdapterMap['element']).tagName === 'body'
+            )) as DefaultTreeAdapterMap['element']
+        const head = (html as DefaultTreeAdapterMap['element'])
+            .childNodes.find(_node => {
+                const node = _node as DefaultTreeAdapterMap['element']
+                return node.tagName === 'head'
+            })
         const {
             collectedStyles,
             collectedScripts,
@@ -169,10 +180,10 @@ function expandTemplate ({
     styleTransforms,
     scriptTransforms
 }):{
-    frag;
-    styles;
-    scripts;
-    links;
+    frag:DefaultTreeAdapterMap['documentFragment'];
+    styles:DefaultTreeAdapterMap['documentFragment'];
+    scripts:DefaultTreeAdapterMap['documentFragment'];
+    links:DefaultTreeAdapterMap['documentFragment'];
 } {
     const tagName = node.tagName
     const frag = renderTemplate({
@@ -399,7 +410,15 @@ function replaceSlots (node, slots) {
     return node
 }
 
-function applyScriptTransforms ({ node, scriptTransforms, tagName }) {
+function applyScriptTransforms ({
+    node,
+    scriptTransforms,
+    tagName
+}:{
+    node:DefaultTreeAdapterMap['element'];
+    scriptTransforms;
+    tagName;
+}) {
     const attrs = node?.attrs || []
     if (node.childNodes.length) {
         const raw = node.childNodes[0].value
@@ -411,6 +430,7 @@ function applyScriptTransforms ({ node, scriptTransforms, tagName }) {
             node.childNodes[0].value = out
         }
     }
+
     return node
 }
 
