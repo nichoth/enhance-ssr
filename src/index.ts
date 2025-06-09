@@ -297,8 +297,8 @@ function attrsToState (attrs:Attrs = [], obj = {}):Record<string, string> {
 function fillSlots (node, template) {
     const slots = findSlots(template)
     const inserts = findInserts(node)
-    const usedSlots = []
-    const usedInserts = []
+    const usedSlots:El[] = []
+    const usedInserts:El[] = []
     const unnamedSlots = []
 
     for (let i = 0; i < slots.length; i++) {
@@ -323,7 +323,7 @@ function fillSlots (node, template) {
                         if (attr.name === 'slot') {
                             const insertSlot = attr.value
                             if (insertSlot === slotName) {
-                                const slotParentChildNodes = slot.parentNode.childNodes
+                                const slotParentChildNodes = slot.parentNode!.childNodes
                                 slotParentChildNodes.splice(
                                     slotParentChildNodes
                                         .indexOf(slot),
@@ -387,8 +387,8 @@ function findSlots (node:El):El[] {
     return elements
 }
 
-function findInserts (node) {
-    const elements = []
+function findInserts (node:El):El[] {
+    const elements:El[] = []
     const find = (node) => {
         for (const child of node.childNodes) {
             const hasSlot = child.attrs?.find(attr => attr.name === 'slot')
