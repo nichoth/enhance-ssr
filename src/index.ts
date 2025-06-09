@@ -399,6 +399,7 @@ function findInserts (node:El):El[] {
         }
     }
     find(node)
+
     return elements
 }
 
@@ -407,11 +408,10 @@ function replaceSlots (node, slots:El[]) {
         const value = slot.attrs.find(attr => attr.name === 'name')?.value
         const asTag = slot.attrs.find(attr => attr.name === 'as')?.value
         const name = 'slot'
-        const slotChildren = slot.childNodes.filter(
-            n => {
-                return !n.nodeName.startsWith('#')
-            }
-        )
+        const slotChildren = slot.childNodes.filter(n => {
+            return !n.nodeName.startsWith('#')
+        })
+
         if (value) {
             if (!slotChildren.length || slotChildren.length > 1) {
                 // Only has text nodes
@@ -433,6 +433,7 @@ function replaceSlots (node, slots:El[]) {
                 slot.childNodes.length = 0
                 slot.childNodes.push(wrapperSpan as Child)
             }
+
             if (slotChildren.length === 1) {
                 const child = slotChildren[0] as Child
                 // Only add attrs if child is an element node
@@ -452,6 +453,7 @@ function replaceSlots (node, slots:El[]) {
             }
         }
     })
+
     return node
 }
 
