@@ -300,6 +300,7 @@ function fillSlots (node, template) {
     const usedSlots = []
     const usedInserts = []
     const unnamedSlots = []
+
     for (let i = 0; i < slots.length; i++) {
         let hasSlotName = false
         const slot = slots[i]
@@ -369,8 +370,8 @@ function fillSlots (node, template) {
     )
 }
 
-function findSlots (node) {
-    const elements = []
+function findSlots (node:El):El[] {
+    const elements:El[] = []
     const find = (node) => {
         for (const child of node.childNodes) {
             if (child.tagName === 'slot') {
@@ -382,6 +383,7 @@ function findSlots (node) {
         }
     }
     find(node)
+
     return elements
 }
 
