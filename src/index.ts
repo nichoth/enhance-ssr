@@ -271,13 +271,16 @@ function renderTemplate ({ name, elements, attrs = [], state = {} }:{
     attrs:Attrs;
     state;
 }) {
-    attrs = attrs ? attrsToState(attrs) : []
-    state.attrs = attrs
-    const templateRenderFunction = elements[name]?.render || elements[name]?.prototype?.render
+    const newAttrs = attrs ? attrsToState(attrs) : []
+    state.attrs = newAttrs
+    const templateRenderFunction = (
+        elements[name]?.render ||
+        elements[name]?.prototype?.render
+    )
     const template = templateRenderFunction || elements[name]
 
     if (template && typeof template === 'function') {
-        return fragment(template({ html: render, state }))
+        return parseFragment(template({ html: render, state }))
     } else {
         throw new Error(`Could not find the template function for ${name}`)
     }
