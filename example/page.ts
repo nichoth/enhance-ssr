@@ -1,6 +1,6 @@
 import MyElement from './my-component.js'
-import enhance from '../src/index.js'
 import styleTransform from '@enhance/enhance-style-transform'
+import enhance from '../src/index.js'
 
 const html = enhance({
     elements: {

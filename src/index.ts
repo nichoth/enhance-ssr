@@ -10,22 +10,10 @@ const nanoid = customAlphabet(alphabet, 7)
 type El = DefaultTreeAdapterMap['element']
 type Child = DefaultTreeAdapterMap['childNode']
 
-// function html (strings, ...values):string|{ head; body; } {
-
-type HTMLify = (strings, values)=>string
+type HTMLify = (strings, values)=>string|{ head; body; }
 type SeparatedHTML = (string, values)=>{ head; body; }
 
-export default function Enhancer (options:Partial<{
-    initialState,
-    elements,
-    scriptTransforms,
-    styleTransforms,
-    uuidFunction,
-    bodyContent,
-    enhancedAttr,
-    separateContent:true
-}>):SeparatedHTML
-export default function Enhancer (options:Partial<{
+type EnhancerOptions = {
     initialState,
     elements,
     scriptTransforms,
@@ -34,7 +22,14 @@ export default function Enhancer (options:Partial<{
     bodyContent,
     enhancedAttr,
     separateContent:boolean
-}> = {}):HTMLify|SeparatedHTML {
+}
+
+export function Enhancer (options:Partial<EnhancerOptions> & {
+    separatedContent: true
+}):SeparatedHTML
+export function Enhancer (
+    options:Partial<EnhancerOptions> = {}
+):HTMLify|SeparatedHTML {
     const {
         initialState = {},
         elements = [],
@@ -527,3 +522,5 @@ function applyStyleTransforms ({
 function appendNodes (target, nodes) {
     target.childNodes.push(...nodes)
 }
+
+export default Enhancer
