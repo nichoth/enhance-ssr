@@ -12,24 +12,24 @@ const html = enhance({
 
 export function renderPage ({ hello, easy }) {
     const result:{ head; body; } = html`
-      <style>
-        my-element {
-          background: lightyellow;
-        }
+        <style>
+            my-element {
+                background: lightyellow;
+            }
 
-        main {
-          display: flex;
-          gap: 1.5rem;
-          justify-content: center;
-          flex-wrap: wrap;
-          margin-block: 3rem;
-        }
-      </style>
+            main {
+                display: flex;
+                gap: 1.5rem;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-block: 3rem;
+            }
+        </style>
 
-      <main>
-        <my-element hello=${hello} easy=${easy}>Boom done.</my-element>
-        <my-element hello="folks" easy=${[4, 5, 6]}>Boom done.</my-element>
-      </main>
+        <main>
+            <my-element hello=${hello} easy=${easy}>Boom done.</my-element>
+            <my-element hello="folks" easy=${[4, 5, 6]}>Boom done.</my-element>
+        </main>
     `
 
     return [result.head, result.body]

@@ -10,6 +10,21 @@ const nanoid = customAlphabet(alphabet, 7)
 type El = DefaultTreeAdapterMap['element']
 type Child = DefaultTreeAdapterMap['childNode']
 
+// function html (strings, ...values):string|{ head; body; } {
+
+type HTMLify = (strings, values)=>string
+type SeparatedHTML = (string, values)=>{ head; body; }
+
+export default function Enhancer (options:Partial<{
+    initialState,
+    elements,
+    scriptTransforms,
+    styleTransforms,
+    uuidFunction,
+    bodyContent,
+    enhancedAttr,
+    separateContent:true
+}>):SeparatedHTML
 export default function Enhancer (options:Partial<{
     initialState,
     elements,
@@ -19,7 +34,7 @@ export default function Enhancer (options:Partial<{
     bodyContent,
     enhancedAttr,
     separateContent:boolean
-}> = {}) {
+}> = {}):HTMLify|SeparatedHTML {
     const {
         initialState = {},
         elements = [],
@@ -80,7 +95,7 @@ export default function Enhancer (options:Partial<{
         }
     }
 
-    return function html (strings, ...values) {
+    function html (strings, ...values):string|{ head; body; } {
         const doc = parse(render(strings, ...values))
         const html:DefaultTreeAdapterMap['documentFragment'] = doc
             .childNodes
@@ -177,6 +192,8 @@ export default function Enhancer (options:Partial<{
                 serialize(doc)).replace(/__b_\d+/g, '')
         }
     }
+
+    return html
 }
 
 function render (strings, ...values):string {
