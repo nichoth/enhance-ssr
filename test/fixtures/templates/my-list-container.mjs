@@ -1,6 +1,6 @@
-export default function MyListContainer({ html, state }) {
-  const { items } = state?.attrs
-  return html`
+export default function MyListContainer ({ html, state }) {
+    const { items } = state?.attrs
+    return html`
 <h2>My List Container</h2>
 <slot name=title>
   <h3>

@@ -1,9 +1,9 @@
-export default function MyContextParent({ html, state }) {
-  const { attrs, context } = state
-  const { message } = attrs
-  context.message = message
+export default function MyContextParent ({ html, state }) {
+    const { attrs, context } = state
+    const { message } = attrs
+    context.message = message
 
-  return html`
+    return html`
     <slot></slot>
   `
 }

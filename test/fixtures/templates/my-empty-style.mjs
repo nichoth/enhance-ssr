@@ -1,3 +1,3 @@
-export default function EmptyStyle({ html }) {
-  return html`<style></style>`;
+export default function EmptyStyle ({ html }) {
+    return html`<style></style>`
 }

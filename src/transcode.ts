@@ -2,7 +2,8 @@ const map = {}
 let place = 0
 export function encode (value:number):number
 export function encode (value:string):string
-export function encode (value:string|number):number|string {
+export function encode (value:string|number):string|number
+export function encode (value:unknown):number|string {
     if (typeof value === 'string') {
         return value
     } else if (typeof value === 'number') {

@@ -10,7 +10,12 @@ const html = enhance({
     separateContent: true
 })
 
-export function renderPage ({ hello, easy }) {
+export function renderPage ({ hello, easy }:{
+    easy:number[];
+    hello:string;
+}) {
+    console.log('**easy page file**', easy)
+
     const result:{ head; body; } = html`
         <style>
             my-element {
@@ -27,8 +32,12 @@ export function renderPage ({ hello, easy }) {
         </style>
 
         <main>
-            <my-element hello=${hello} easy=${easy}>Boom done.</my-element>
-            <my-element hello="folks" easy="${[4, 5, 6].join(',')}">Boom done.</my-element>
+            <my-element hello=${hello} easy=${easy}>
+                Boom done.
+            </my-element>
+            <my-element hello="folks" easy=${[4, 5, 6]}>
+                Boom done.
+            </my-element>
         </main>
     `
 

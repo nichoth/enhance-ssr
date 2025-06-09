@@ -1,4 +1,4 @@
-import { renderPage } from './page'
+import { renderPage } from './page.js'
 
 const data = {
     hello: 'world',

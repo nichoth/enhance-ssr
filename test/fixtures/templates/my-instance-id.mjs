@@ -1,7 +1,7 @@
-export default function MyInstanceID({ html, state }) {
-  const { instanceID='' } = state
+export default function MyInstanceID ({ html, state }) {
+    const { instanceID = '' } = state
 
-  return html`
+    return html`
 <p>${instanceID}</p>
   `
 }

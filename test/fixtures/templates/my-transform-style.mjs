@@ -1,5 +1,5 @@
-export default function MyTransformStyle({ html }) {
-  return html`
+export default function MyTransformStyle ({ html }) {
+    return html`
 <style scope="global">
   :host {
     display: block;

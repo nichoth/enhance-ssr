@@ -10,8 +10,8 @@ const nanoid = customAlphabet(alphabet, 7)
 type El = DefaultTreeAdapterMap['element']
 type Child = DefaultTreeAdapterMap['childNode']
 
-type HTMLify = (strings, values)=>string|{ head; body; }
-type SeparatedHTML = (string, values)=>{ head; body; }
+type HTMLify = (strings, ...values:any[])=>string
+type SeparatedHTML = (string, ...values:any[])=>{ head; body; }
 
 export type EnhancerOptions = {
     initialState,
@@ -33,6 +33,7 @@ export function Enhancer (opts:Partial<EnhancerOptions> & {
 export function Enhancer (options:Partial<EnhancerOptions> & {
     separateContent:true
 }):SeparatedHTML
+
 export function Enhancer (
     options:Partial<EnhancerOptions> = {}
 ):HTMLify|SeparatedHTML {
@@ -96,9 +97,12 @@ export function Enhancer (
         }
     }
 
-    function html (strings:string, ...values):string|{ head; body; } {
+    function html (
+        strings:TemplateStringsArray,
+        ...values:any[]
+    ):string|{ head:string; body:string; } {
         const doc = parse(render(strings, ...values))
-        const html:DefaultTreeAdapterMap['documentFragment'] = doc
+        const html: DefaultTreeAdapterMap['documentFragment'] = doc
             .childNodes
             .find(_node => {
                 const node = _node as El
@@ -184,7 +188,7 @@ export function Enhancer (
 
         if (separateContent) {
             return {
-                head: serialize(head).replace(/__b_\d+/g, ''), // NOTE: I'm not sure what these regexes are for but I copied them up
+                head: serialize(head).replace(/__b_\d+/g, ''),
                 body: serialize(body).replace(/__b_\d+/g, '')
             }
         } else {
@@ -194,10 +198,15 @@ export function Enhancer (
         }
     }
 
-    return html
+    // Type guards to ensure correct return type
+    if (separateContent) {
+        return html as SeparatedHTML
+    } else {
+        return html as HTMLify
+    }
 }
 
-function render (strings, ...values):string {
+function render (strings:TemplateStringsArray, ...values:(string|number)[]):string {
     const collect:string[] = []
     for (let i = 0; i < strings.length - 1; i++) {
         collect.push(strings[i], '' + encode(values[i]))

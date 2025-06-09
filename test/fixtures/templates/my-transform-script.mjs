@@ -1,5 +1,5 @@
-export default function MyTransformScript({ html }) {
-  return html`
+export default function MyTransformScript ({ html }) {
+    return html`
 <h1>My Transform Script</h1>
 <script type=module>
   class MyTransformScript extends HTMLElement {
