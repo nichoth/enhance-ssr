@@ -1,6 +1,8 @@
 const map = {}
 let place = 0
-export function encode (value) {
+export function encode (value:number):number
+export function encode (value:string):string
+export function encode (value:string|number):number|string {
     if (typeof value === 'string') {
         return value
     } else if (typeof value === 'number') {
@@ -12,8 +14,6 @@ export function encode (value) {
     }
 }
 
-export function decode (value) {
-    return value.startsWith('__b_')
-        ? map[value]
-        : value
+export function decode (value:string):string {
+    return value.startsWith('__b_') ? map[value] : value
 }

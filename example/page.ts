@@ -5,14 +5,13 @@ import styleTransform from '@enhance/enhance-style-transform'
 const html = enhance({
     elements: {
         'my-element': MyElement,
-        's-dom': SDom
     },
     styleTransforms: [styleTransform],
-    separateContent: true
+    // separateContent: true
 })
 
 export function renderPage ({ hello, easy }) {
-    const result = html`
+    const result:{ head; body; } = html`
     <style>
       my-element {
         background: lightyellow;

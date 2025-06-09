@@ -7,6 +7,8 @@ import { customAlphabet } from 'nanoid'
 const alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
 const nanoid = customAlphabet(alphabet, 7)
 
+type El = DefaultTreeAdapterMap['element']
+
 export default function Enhancer (options:Partial<{
     initialState,
     elements,
@@ -14,7 +16,8 @@ export default function Enhancer (options:Partial<{
     styleTransforms,
     uuidFunction,
     bodyContent,
-    enhancedAttr
+    enhancedAttr,
+    separateContent:boolean
 }> = {}) {
     const {
         initialState = {},
@@ -23,7 +26,8 @@ export default function Enhancer (options:Partial<{
         styleTransforms = [],
         uuidFunction = nanoid,
         bodyContent = false,
-        enhancedAttr = true
+        enhancedAttr = true,
+        separateContent = false
     } = options
     const store = Object.assign({}, initialState)
 
@@ -32,9 +36,9 @@ export default function Enhancer (options:Partial<{
         collectedScripts,
         collectedLinks
     } {
-        const collectedStyles:DefaultTreeAdapterMap['documentFragment'][] = []
-        const collectedScripts:DefaultTreeAdapterMap['documentFragment'][] = []
-        const collectedLinks:DefaultTreeAdapterMap['documentFragment'][] = []
+        const collectedStyles:El[] = []
+        const collectedScripts:El[] = []
+        const collectedLinks:El[] = []
         const context = {}
 
         walk(node, child => {
@@ -77,21 +81,24 @@ export default function Enhancer (options:Partial<{
 
     return function html (strings, ...values) {
         const doc = parse(render(strings, ...values))
-        const html = doc.childNodes.find(_node => {
-            const node = _node as DefaultTreeAdapterMap['element']
-            return (node.tagName && node.tagName === 'html')
-        })
-        if (!html) return
-        const body = (html as DefaultTreeAdapterMap['documentFragment'])
+        const html:DefaultTreeAdapterMap['documentFragment'] = doc
             .childNodes
-            .find(node => (
-                (node as DefaultTreeAdapterMap['element']).tagName === 'body'
-            )) as DefaultTreeAdapterMap['element']
-        const head = (html as DefaultTreeAdapterMap['element'])
-            .childNodes.find(_node => {
-                const node = _node as DefaultTreeAdapterMap['element']
+            .find(_node => {
+                const node = _node as El
+                return node.tagName === 'html'
+            }) as DefaultTreeAdapterMap['documentFragment']
+
+        const body = html.childNodes.find(node => (
+            (node as El).tagName === 'body'
+        )) as El
+
+        const head = (html as El)
+            .childNodes
+            .find(_node => {
+                const node = _node as El
                 return node.tagName === 'head'
-            })
+            }) as DefaultTreeAdapterMap['parentNode']
+
         const {
             collectedStyles,
             collectedScripts,
@@ -116,6 +123,7 @@ export default function Enhancer (options:Partial<{
 
             appendNodes(body, Object.values(uniqueScripts))
         }
+
         if (collectedStyles.length) {
             const uniqueStyles = collectedStyles.flat().reduce((acc, style) => {
                 if (style?.childNodes?.[0]?.value) {
@@ -142,6 +150,7 @@ export default function Enhancer (options:Partial<{
                 appendNodes(head, stylesNodeHead)
             }
         }
+
         if (collectedLinks.length) {
             const uniqueLinks = collectedLinks.flat().reduce((acc, link) => {
                 if (link) {
@@ -156,10 +165,16 @@ export default function Enhancer (options:Partial<{
             appendNodes(head, Object.values(uniqueLinks))
         }
 
-        return (bodyContent ?
-            serializeOuter(body.childNodes[0]) :
-            serialize(doc)
-        ).replace(/__b_\d+/g, '')
+        if (separateContent) {
+            return {
+                head: serialize(head).replace(/__b_\d+/g, ''), // NOTE: I'm not sure what these regexes are for but I copied them up
+                body: serialize(body).replace(/__b_\d+/g, '')
+            }
+        } else {
+            return (bodyContent ?
+                serializeOuter(body.childNodes[0]) :
+                serialize(doc)).replace(/__b_\d+/g, '')
+        }
     }
 }
 
@@ -181,9 +196,9 @@ function expandTemplate ({
     scriptTransforms
 }):{
     frag:DefaultTreeAdapterMap['documentFragment'];
-    styles:DefaultTreeAdapterMap['documentFragment'];
-    scripts:DefaultTreeAdapterMap['documentFragment'];
-    links:DefaultTreeAdapterMap['documentFragment'];
+    styles:El[];
+    scripts:El[];
+    links:El[];
 } {
     const tagName = node.tagName
     const frag = renderTemplate({
@@ -192,9 +207,9 @@ function expandTemplate ({
         attrs: node.attrs,
         state
     }) || ''
-    const styles = []
-    const scripts = []
-    const links = []
+    const styles:El[] = []
+    const scripts:El[] = []
+    const links:El[] = []
 
     for (const node of frag.childNodes) {
         if (node.nodeName === 'script') {
@@ -228,10 +243,12 @@ function expandTemplate ({
             links.push(node)
         }
     }
+
     return { frag, styles, scripts, links }
 }
 
-function normalizeLinkHtml (node) {
+function normalizeLinkHtml (_node) {
+    const node = _node as El
     const attrs = Array.from(node.attrs)
         .sort((a, b) => {
             if (a.name < b.name) {
@@ -246,8 +263,15 @@ function normalizeLinkHtml (node) {
     return `<link ${attrs.join(' ')} />`
 }
 
-function renderTemplate ({ name, elements, attrs = [], state = {} }) {
-    attrs = attrs ? attrsToState(attrs) : {}
+type Attrs = DefaultTreeAdapterMap['element']['attrs']
+
+function renderTemplate ({ name, elements, attrs = [], state = {} }:{
+    name:string;
+    elements:El[];
+    attrs:Attrs;
+    state;
+}) {
+    attrs = attrs ? attrsToState(attrs) : []
     state.attrs = attrs
     const templateRenderFunction = elements[name]?.render || elements[name]?.prototype?.render
     const template = templateRenderFunction || elements[name]
@@ -259,8 +283,11 @@ function renderTemplate ({ name, elements, attrs = [], state = {} }) {
     }
 }
 
-function attrsToState (attrs = [], obj = {}) {
-    [...attrs].forEach(attr => obj[attr.name] = decode(attr.value))
+function attrsToState (attrs:Attrs = [], obj = {}):Record<string, string> {
+    [...attrs].forEach(attr => {
+        obj[attr.name] = decode(attr.value)
+    })
+
     return obj
 }
 
@@ -418,7 +445,7 @@ function applyScriptTransforms ({
     node:DefaultTreeAdapterMap['element'];
     scriptTransforms:(({ attrs, raw, tagName })=>string)[];
     tagName;
-}) {
+}):DefaultTreeAdapterMap['element'] {
     const attrs = node?.attrs || []
     if (node.childNodes.length) {
         const firstChild = node.childNodes[0]
