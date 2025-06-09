@@ -36,9 +36,9 @@ export default function Enhancer (options:Partial<{
         collectedScripts,
         collectedLinks
     } {
-        const collectedStyles:El[] = []
-        const collectedScripts:El[] = []
-        const collectedLinks:El[] = []
+        const collectedStyles:El[][] = []
+        const collectedScripts:El[][] = []
+        const collectedLinks:El[][] = []
         const context = {}
 
         walk(node, child => {
