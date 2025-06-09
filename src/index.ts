@@ -299,7 +299,7 @@ function fillSlots (node, template) {
     const inserts = findInserts(node)
     const usedSlots:El[] = []
     const usedInserts:El[] = []
-    const unnamedSlots = []
+    const unnamedSlots:[El, El][] = []
 
     for (let i = 0; i < slots.length; i++) {
         let hasSlotName = false
