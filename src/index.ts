@@ -8,6 +8,7 @@ const alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
 const nanoid = customAlphabet(alphabet, 7)
 
 type El = DefaultTreeAdapterMap['element']
+type Child = DefaultTreeAdapterMap['childNode']
 
 export default function Enhancer (options:Partial<{
     initialState,
@@ -298,7 +299,7 @@ function fillSlots (node, template) {
     const slots = findSlots(template)
     const inserts = findInserts(node)
     const usedSlots:El[] = []
-    const usedInserts:El[] = []
+    const usedInserts:(Child|El)[] = []
     const unnamedSlots:[El, El][] = []
 
     for (let i = 0; i < slots.length; i++) {
@@ -347,10 +348,10 @@ function fillSlots (node, template) {
     unnamedSlots.forEach(([slot, node]) => {
         const nodeChildren = node.childNodes
             .filter(node => !usedInserts.includes(node))
-        const children = nodeChildren.length
-            ? nodeChildren
-            : [...slot.childNodes]
-        const slotParentChildNodes = slot.parentNode.childNodes
+        const children = (nodeChildren.length ?
+            nodeChildren :
+            [...slot.childNodes])
+        const slotParentChildNodes = slot.parentNode!.childNodes
         slotParentChildNodes.splice(
             slotParentChildNodes
                 .indexOf(slot),
@@ -401,7 +402,7 @@ function findInserts (node:El):El[] {
     return elements
 }
 
-function replaceSlots (node, slots) {
+function replaceSlots (node, slots:El[]) {
     slots.forEach(slot => {
         const value = slot.attrs.find(attr => attr.name === 'name')?.value
         const asTag = slot.attrs.find(attr => attr.name === 'as')?.value
@@ -414,7 +415,13 @@ function replaceSlots (node, slots) {
         if (value) {
             if (!slotChildren.length || slotChildren.length > 1) {
                 // Only has text nodes
-                const wrapperSpan = {
+                const wrapperSpan:{
+                    nodeName:string;
+                    tagName:string;
+                    attrs:{ value:string; name:string; }[];
+                    namespaceURI:string;
+                    childNodes:Child[]
+                } = {
                     nodeName: asTag || 'span',
                     tagName: asTag || 'span',
                     attrs: [{ value, name }],
@@ -424,19 +431,25 @@ function replaceSlots (node, slots) {
 
                 wrapperSpan.childNodes.push(...slot.childNodes)
                 slot.childNodes.length = 0
-                slot.childNodes.push(wrapperSpan)
+                slot.childNodes.push(wrapperSpan as Child)
             }
             if (slotChildren.length === 1) {
-                slotChildren[0].attrs.push({ value, name })
+                const child = slotChildren[0] as Child
+                // Only add attrs if child is an element node
+                if ('attrs' in child && Array.isArray((child as El).attrs)) {
+                    (child as El).attrs.push({ value, name })
+                }
             }
 
-            const slotParentChildNodes = slot.parentNode.childNodes
-            slotParentChildNodes.splice(
-                slotParentChildNodes
-                    .indexOf(slot),
-                1,
-                ...slot.childNodes
-            )
+            const slotParentChildNodes = slot.parentNode?.childNodes
+            if (slotParentChildNodes) {
+                slotParentChildNodes.splice(
+                    slotParentChildNodes
+                        .indexOf(slot),
+                    1,
+                    ...slot.childNodes
+                )
+            }
         }
     })
     return node
