@@ -28,7 +28,7 @@ export function renderPage ({ hello, easy }) {
 
         <main>
             <my-element hello=${hello} easy=${easy}>Boom done.</my-element>
-            <my-element hello="folks" easy=${[4, 5, 6]}>Boom done.</my-element>
+            <my-element hello="folks" easy="${[4, 5, 6].join(',')}">Boom done.</my-element>
         </main>
     `
 

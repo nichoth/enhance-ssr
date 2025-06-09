@@ -13,7 +13,7 @@ type Child = DefaultTreeAdapterMap['childNode']
 type HTMLify = (strings, values)=>string|{ head; body; }
 type SeparatedHTML = (string, values)=>{ head; body; }
 
-type EnhancerOptions = {
+export type EnhancerOptions = {
     initialState,
     elements,
     scriptTransforms,
@@ -24,8 +24,14 @@ type EnhancerOptions = {
     separateContent:boolean
 }
 
+export function Enhancer (opts:Partial<EnhancerOptions & {
+    separateContent:undefined
+}>):HTMLify
+export function Enhancer (opts:Partial<EnhancerOptions> & {
+    separateContent:false
+}):HTMLify
 export function Enhancer (options:Partial<EnhancerOptions> & {
-    separatedContent: true
+    separateContent:true
 }):SeparatedHTML
 export function Enhancer (
     options:Partial<EnhancerOptions> = {}
@@ -90,7 +96,7 @@ export function Enhancer (
         }
     }
 
-    function html (strings, ...values):string|{ head; body; } {
+    function html (strings:string, ...values):string|{ head; body; } {
         const doc = parse(render(strings, ...values))
         const html:DefaultTreeAdapterMap['documentFragment'] = doc
             .childNodes
