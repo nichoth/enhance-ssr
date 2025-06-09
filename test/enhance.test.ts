@@ -1,5 +1,5 @@
 import { test } from '@substrate-system/tapzero'
-import enhance from '../index.mjs'
+import enhance from '../src/index.js'
 import MyButton from './fixtures/templates/my-button.mjs'
 import MyContent from './fixtures/templates/my-content.mjs'
 import MyCounter from './fixtures/templates/my-counter.mjs'
